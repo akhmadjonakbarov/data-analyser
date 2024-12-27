@@ -1,6 +1,4 @@
-Here’s the markdown code for your README:
 
-```markdown
 # Data Analysis App
 
 This is a data analysis application built using Python, FastAPI, pandas, numpy, and matplotlib. The app allows users to
