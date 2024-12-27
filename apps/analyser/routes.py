@@ -80,12 +80,12 @@ def generate_price_overview(file_name, columns, chart, title="Overview"):
         df = df.dropna(subset=[x_label, y_label])
 
         # Ensure the chart type is valid
-        if chart not in ['line', 'bar', 'barh', 'hist', 'box', 'kde', 'area']:
+        if chart not in ['line', 'bar', 'barh', 'hist', 'box', 'kde', 'area', 'pie']:
             raise ValueError(f"Invalid chart type: {chart}")
 
         # Create a larger figure for many labels
         fig, ax = plt.subplots(figsize=(22, 15))  # Larger figure for many labels
-        df.plot(x=x_label, y=y_label, kind='pie', ax=ax)
+        df.plot(x=x_label, y=y_label, kind=chart, ax=ax)
 
         ax.set_title(label=title)
         ax.set_xlabel(x_label)
