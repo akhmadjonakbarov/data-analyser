@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{%block content%}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-2">
+            <h4 class="">Columns</h4>
+            {% for item in columns %}
+            <div class="form-check">
+                <input
+                        class="form-check-input"
+                        type="checkbox"
+                        name="selected_columns"
+                        value="{{ item }}"
+                        id="flexCheckDefault{{ loop.index }}"
+                >
+                <label class="form-check-label" for="flexCheckDefault{{ loop.index }}">
+                    <span class="fw-bold">{{ item }}</span>
+                </label>
+            </div>
+            {% endfor %}
+            <!-- Add chart types checkboxes -->
+            <div class="form-check">
+                <label class="fw-bold">Select Chart Type:</label>
+                {% set chart_types = ['line', 'bar', 'scatter', 'hist', 'pie'] %}
+                {% for chart_type in chart_types %}
+                <div class="form-check">
+                    <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="chart_types"
+                            value="{{ chart_type }}"
+                            id="chart-type-{{ loop.index }}"
+                    >
+                    <label class="form-check-label" for="chart-type-{{ loop.index }}">
+                        <span class="fw-bold">{{ chart_type | capitalize }}</span>
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+            <p class="">
+                You can't select more than 2 columns!
+            </p>
+            <button id="submitButton" class="btn btn-primary">Submit</button>
+
+        </div>
+        <div class="col-10">
+            <h1>Processed Data</h1>
+            <div class="table-responsive">
+                {{ html_table | safe }}
+            </div>
+            <a href="/" class="btn btn-primary">Back to Upload</a>
+        </div>
+        <script>
+
+
+            document.getElementById("submitButton").addEventListener("click", async () => {
+                const selectedColumns = [];
+                const selectedChartType = [];
+                const chartType = 'bar';  // You can dynamically set this if needed
+
+                // Collect selected columns
+                document.querySelectorAll('input[name="selected_columns"]:checked').forEach(checkbox => {
+                    selectedColumns.push(checkbox.value);
+                });
+                document.querySelectorAll('input[name="chart_types"]:checked').forEach(checkbox => {
+                    selectedChartType.push(checkbox.value);
+                });
+
+                // Check if there are any columns selected
+                if (selectedColumns.length === 0) {
+                    alert("Please select at least one column.");
+                    return;
+                }
+
+                // Construct the URL with query parameters
+                const fileName = "{{ file_name }}";  // This is passed from Jinja2 to JavaScript
+                const url = `/prepare-overview/${fileName}?columns=${selectedColumns.join(',')}&chart=${selectedChartType[0]}&title=overview`;
+
+                try {
+                    // Await the fetch request to ensure it completes before opening the new window
+                    const response = await fetch(url, {
+                        method: 'GET',  // Use GET instead of POST
+                    });
+                    if (response.ok) {
+                        const image_url = await response.json()
+                        window.location.href = '/overview?file_name=' + image_url['image_of_overview']
+                    }
+
+                } catch (error) {
+                    console.error("Fetch error:", error);
+                }
+            });
+
+        </script>
+    </div>
+</div>
+{%endblock %}

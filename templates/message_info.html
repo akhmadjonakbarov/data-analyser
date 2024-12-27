@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 shadow" style="width: 30rem;">
+        <div class="alert alert-success text-center">
+            <h4>{{ message }}</h4>
+
+        </div>
+        <a href="/upload" class="btn btn-primary">Upload Another File</a>
+    </div>
+</div>
+{% endblock %}
